@@ -1,3 +1,7 @@
+import xmltodict
+import json
+from datetime import datetime
+
 def rec_to_row(line):
     tree = xmltodict.parse(line)
     bib = tree['us-patent-application']['us-bibliographic-data-application']
