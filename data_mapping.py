@@ -6,44 +6,39 @@ def parties(bib):
         applicants = bib['parties']['applicants']['applicant']
     else:
         applicants = bib['us-parties']['us-applicants']['us-applicant']
-    _applicants = {}
+    _applicants = []
     i = 0
+    #applicants
     if type(applicants)==type([]):
         for a in applicants:
-            _applicants[str(i)] = {}
+            temp = {}
             if 'last-name' in a['addressbook']:
-                _applicants[str(i)]['name'] = a['addressbook']['first-name'] + " " + a['addressbook']['last-name'] if 'first-name' in a['addressbook'] else a['addressbook']['last-name']
+                temp['name'] = a['addressbook']['first-name'] + " " + a['addressbook']['last-name'] if 'first-name' in a['addressbook'] else a['addressbook']['last-name']
             else:
-                _applicants[str(i)]['name'] = a['addressbook']['orgname']
-            if 'address' in a['addressbook']:
-                _applicants[str(i)]['country'] = a['addressbook']['address']['country']
-            else:
-                _applicants[str(i)]['country'] = None
-            i += 1
+                temp['name'] = a['addressbook']['orgname']
+            temp['country'] = a['addressbook']['address']['country'] if 'address' in a['addressbook'] else None
+            _applicants.append(temp)
     else:
         if 'last-name' in applicants['addressbook']:
-            _applicants[str(i)] = {'name':applicants['addressbook']['first-name'] + " " + applicants['addressbook']['last-name'] if 'first-name' in applicants['addressbook'] else applicants['addressbook']['last-name'],
-                               'country':applicants['addressbook']['address']['country']}
-            i += 1
+            temp = {'name':applicants['addressbook']['first-name'] + " " + applicants['addressbook']['last-name'] if 'first-name' in applicants['addressbook'] else applicants['addressbook']['last-name']}
+            temp['country'] = applicants['addressbook']['address']['country'] if 'address' in applicants['addressbook'] else None
+            _applicants.append(temp)
         else:
-            _applicants[str(i)] = {'name':applicants['addressbook'][u'orgname']}
-            if 'address' in applicants['addressbook']:
-                _applicants[str(i)]['country'] = applicants['addressbook']['address']['country']
-            else:
-                _applicants[str(i)]['country'] = None
-            i += 1
+            temp = {'name':applicants['addressbook'][u'orgname']}
+            temp['country'] = applicants['addressbook']['address']['country'] if 'address' in applicants['addressbook'] else None
+            _applicants.append(temp)
+    #inventors
     if 'us-parties' in bib and 'inventors' in bib['us-parties']:
         inv = bib['us-parties']['inventors']['inventor']
         if type(inv) == type([]):
             for a in inv:
-                _applicants[str(i)] = {}
-                _applicants[str(i)]['name'] = a['addressbook']['first-name'] + " " + a['addressbook']['last-name'] if 'first-name' in a['addressbook'] else a['addressbook']['last-name']
-                _applicants[str(i)]['country'] = a['addressbook']['address']['country']
-                i += 1
+                temp = {'name':a['addressbook']['first-name'] + " " + a['addressbook']['last-name'] if 'first-name' in a['addressbook'] else a['addressbook']['last-name']}
+                temp['country'] = a['addressbook']['address']['country'] if 'address' in a['addressbook'] else None
+                _applicants.append(temp)
         else:
-            _applicants[str(i)] ={'name':inv['addressbook']['first-name'] + " " + inv['addressbook']['last-name'] if 'first-name' in inv['addressbook'] else inv['addressbook']['last-name'],
-                   'country':inv['addressbook']['address']['country']}
-            i +=1
+            temp = {'name':inv['addressbook']['first-name'] + " " + inv['addressbook']['last-name'] if 'first-name' in inv['addressbook'] else inv['addressbook']['last-name']}
+            temp['country'] = {inv['addressbook']['address']['country'] if 'address' in inv['addressbook'] else None}
+            _applicants.append(temp)
 
     return _applicants
 
@@ -102,4 +97,6 @@ def rec_to_row(line):
                "provisional_app": _prov,
                "child": _child_id
             }
+
+
 
